@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-Frame-Options" content="ALLOWALL"/>
+  <title>Flash Crash Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #0f0f1a;
+      --bg3: #13131f;
+      --accent: #ff6b00;
+      --accent2: #ffcc00;
+      --cyan: #00e5ff;
+      --text: #e8e0d0;
+      --muted: #7a7060;
+      --border: #2a2520;
+      --card-bg: #111118;
+      --glow: #ff6b0044;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px var(--accent);
+    }
+
+    .nav-logo span { color: var(--accent2); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--cyan); }
+
+    .nav-counter {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .hero-eyebrow {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: var(--cyan);
+      letter-spacing: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(20px, 4vw, 40px);
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title .crash {
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent), 2px 2px 0 #8b3a00;
+    }
+
+    .hero-title .site {
+      color: var(--accent2);
+      text-shadow: 0 0 20px var(--accent2), 2px 2px 0 #7a6000;
+    }
+
+    .hero-sub {
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      letter-spacing: 2px;
+    }
+
+    .hero-sub span { color: var(--text); }
+
+    .hero-badges {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 2px;
+      background: var(--bg3);
+    }
+
+    .badge.hot { border-color: var(--accent); color: var(--accent); }
+    .badge.new { border-color: var(--cyan); color: var(--cyan); }
+
+    /* FEATURED */
+    .section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+
+    .section-title .accent { color: var(--accent); }
+
+    .section-count {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    /* FEATURED GAME */
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .featured-thumb {
+      background: #0d0d15;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .featured-thumb .no-thumb {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 2;
+    }
+
+    .featured-thumb .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .featured-thumb:hover .play-overlay { opacity: 1; }
+
+    .play-btn-large {
+      width: 64px;
+      height: 64px;
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .play-btn-large svg { width: 28px; height: 28px; fill: var(--accent); margin-left: 4px; }
+
+    .featured-info {
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-label {
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      color: var(--accent);
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .featured-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(14px, 2vw, 22px);
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-desc {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .featured-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .meta-chip span { color: var(--text); }
+
+    .play-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--accent);
+      color: #000;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      padding: 14px 24px;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: background 0.15s, transform 0.1s;
+      align-self: flex-start;
+    }
+
+    .play-link:hover { background: var(--accent2); transform: translateY(-1px); }
+    .play-link svg { width: 14px; height: 14px; fill: #000; }
+
+    /* GAME GRID */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card:hover { background: var(--bg3); }
+
+    .game-card:hover .card-thumb-overlay { opacity: 1; }
+
+    .card-thumb {
+      aspect-ratio: 4/3;
+      background: #0d0d15;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .game-card:hover .card-thumb img { opacity: 1; }
+
+    .card-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,107,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card-thumb .placeholder-icon {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--border);
+      text-align: center;
+      line-height: 2.5;
+    }
+
+    .play-icon { width: 32px; height: 32px; fill: var(--accent); }
+
+    .card-body { padding: 14px 16px 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+    .card-genre {
+      font-family: 'VT323', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    .card-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .card-year {
+      font-family: 'VT323', monospace;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .card-tag {
+      font-family: 'VT323', monospace;
+      font-size: 13px;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .card-tag.new-tag { border-color: var(--cyan); color: var(--cyan); }
+
+    /* TICKER */
+    .ticker {
+      background: var(--accent);
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker 25s linear infinite;
+    }
+
+    .ticker-inner span {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #000;
+      padding: 0 3rem;
+      letter-spacing: 1px;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      background: var(--bg2);
+    }
+
+    .footer-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-text {
+      font-family: 'VT323', monospace;
+      font-size: 17px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title { animation: fadeUp 0.5s ease both; }
+    .hero-eyebrow { animation: fadeUp 0.4s ease both; }
+    .hero-sub { animation: fadeUp 0.6s 0.1s ease both; }
+    .hero-badges { animation: fadeUp 0.6s 0.2s ease both; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 18px;
+      background: var(--accent);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+      margin-left: 4px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-thumb { border-right: none; border-bottom: 1px solid var(--border); }
+      .nav-links { display: none; }
+      .game-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="#">FLASH<span>CRASH</span>.SITE</a>
+    <ul class="nav-links">
+      <li><a href="#games">GAMES</a></li>
+      <li><a href="#action">ACTION</a></li>
+      <li><a href="#arcade">ARCADE</a></li>
+      <li><a href="#puzzle">PUZZLE</a></li>
+    </ul>
+    <div class="nav-counter" id="game-count">00 GAMES</div>
+  </nav>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>FLASH CRASH SITE</span>
+      <span>&#9632; PRESERVED WITH RUFFLE EMULATOR</span>
+      <span>&#9632; CLASSIC FLASH GAMES RESTORED</span>
+      <span>&#9632; NO PLUGIN REQUIRED</span>
+      <span>&#9632; PLAY IN YOUR BROWSER</span>
+      <span>&#9632; FLASH CRASH SITE</span>
+      <span>&#9632; PRESERVED WITH RUFFLE EMULATOR</span>
+      <span>&#9632; CLASSIC FLASH GAMES RESTORED</span>
+      <span>&#9632; NO PLUGIN REQUIRED</span>
+      <span>&#9632; PLAY IN YOUR BROWSER</span>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">&#9632; FLASH PRESERVATION PROJECT &#9632;</div>
+    <h1 class="hero-title">
+      <span class="crash">FLASH</span><br>
+      <span class="site">CRASH SITE</span>
+      <span class="cursor"></span>
+    </h1>
+    <p class="hero-sub">Classic Flash games, <span>restored and playable.</span><br>No plugin. No install. Just play.</p>
+    <div class="hero-badges">
+      <div class="badge hot">&#9632; RUFFLE POWERED</div>
+      <div class="badge new">&#9632; FREE TO PLAY</div>
+      <div class="badge">&#9632; WORKS IN BROWSER</div>
+      <div class="badge">&#9632; NO ADS</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="accent">&#9632;</span> FEATURED GAME</div>
+    </div>
+
+    <!-- FEATURED GAME - Edit this block for your featured pick -->
+    <div class="featured-card">
+      <div class="featured-thumb">
+        <!-- Replace src with a screenshot of the game, or remove the img tag for a placeholder -->
+        <div class="no-thumb">
+          [ SCREENSHOT ]<br>ADD IMG TAG HERE
+        </div>
+        <div class="play-overlay">
+          <div class="play-btn-large">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="featured-info">
+        <div class="featured-label">&#9632; FEATURED THIS WEEK</div>
+        <!-- EDIT: Change game name, description, and href -->
+        <div class="featured-name">GUN MAYHEM<br>REDUX</div>
+        <p class="featured-desc">
+          The classic arena shooter returns. Pick your fighter, grab some weapons, and blast your friends off the platform. Local multiplayer chaos at its finest.
+        </p>
+        <div class="featured-meta">
+          <div class="meta-chip">GENRE: <span>ACTION</span></div>
+          <div class="meta-chip">PLAYERS: <span>1-4</span></div>
+          <div class="meta-chip">YEAR: <span>2014</span></div>
+        </div>
+        <!-- EDIT: Set href to your game HTML file -->
+        <a class="play-link" href="GunMayhemRedux.html">
+          <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          PLAY NOW
+        </a>
+      </div>
+    </div>
+
+    <!-- GAME GRID -->
+    <div class="section-header" id="games">
+      <div class="section-title"><span class="accent">&#9632;</span> ALL GAMES</div>
+      <div class="section-count" id="grid-count">0 TITLES</div>
+    </div>
+
+    <div class="game-grid" id="game-grid">
+      <!--
+        COPY THIS BLOCK FOR EACH GAME:
+
+        <a class="game-card" href="YOURFILE.html">
+          <div class="card-thumb">
+            <img src="SCREENSHOT.png" alt="Game Name" onerror="this.style.display='none'"/>
+            <div class="placeholder-icon">NO<br>PREVIEW</div>
+            <div class="card-thumb-overlay">
+              <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-genre">ACTION</div>
+            <div class="card-name">GAME NAME HERE</div>
+            <div class="card-footer">
+              <div class="card-year">2008</div>
+              <div class="card-tag">2P</div>
+            </div>
+          </div>
+        </a>
+      -->
+
+      <!-- EXAMPLE CARDS - Replace with your actual games -->
+      <a class="game-card" href="GunMayhemRedux.html">
+        <div class="card-thumb">
+          <div class="placeholder-icon">NO<br>PREVIEW</div>
+          <div class="card-thumb-overlay">
+            <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-genre">ACTION</div>
+          <div class="card-name">GUN MAYHEM REDUX</div>
+          <div class="card-footer">
+            <div class="card-year">2014</div>
+            <div class="card-tag new-tag">4P</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- ADD MORE GAME CARDS BELOW -->
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">FLASH<span>CRASH</span>.SITE</div>
+    <div class="footer-text">
+      Preserving Flash games with the Ruffle emulator.<br>
+      All games belong to their original creators.
+    </div>
+  </footer>
+
+  <script>
+    const cards = document.querySelectorAll('.game-card');
+    document.getElementById('game-count').textContent =
+      String(cards.length).padStart(2, '0') + ' GAMES';
+    document.getElementById('grid-count').textContent =
+      cards.length + ' TITLES';
+  </script>
+
+</body>
+</html>
