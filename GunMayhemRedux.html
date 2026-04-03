@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flash Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    #game-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    ruffle-player {
+      display: block;
+      /* 
+        Set your game's native resolution here.
+        Common sizes: 550x400, 800x600, 640x480
+      */
+      width: 550px;
+      height: 400px;
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <!-- Ruffle will insert a <ruffle-player> here -->
+  </div>
+
+  <!-- Load Ruffle from the official CDN (always up to date) -->
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+  <script>
+    window.addEventListener("load", () => {
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
+
+      // ---- CONFIGURE YOUR GAME HERE ----
+      const SWF_URL = "game.swf";         // Path to your .swf file (relative or absolute)
+      const GAME_WIDTH = 550;             // Native width of the Flash game
+      const GAME_HEIGHT = 400;            // Native height of the Flash game
+      // ----------------------------------
+
+      player.style.width  = GAME_WIDTH  + "px";
+      player.style.height = GAME_HEIGHT + "px";
+
+      document.getElementById("game-container").appendChild(player);
+
+      player.load({
+        url: SWF_URL,
+        allowScriptAccess: false,   // Keep false for safety unless game requires it
+        backgroundColor: "#000000",
+        scale: "showAll",           // Options: showAll | noBorder | exactFit | noScale
+        quality: "high",
+        wmode: "transparent",
+      });
+    });
+  </script>
+
+</body>
+</html>
